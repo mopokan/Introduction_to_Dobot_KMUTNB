@@ -269,7 +269,7 @@ if(selectmode == "-np"):
     camera_leveling_setup() #camera leveling setup
     print("New profile is ready to use!")
 elif(selectmode == "y"):
-    o = str(open("//home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB"+filename).readlines())
+    o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB"+filename).readlines())
     positionData = ast.literal_eval(o[2:-2])
     print(positionData)
     q = positionData[0][0]
