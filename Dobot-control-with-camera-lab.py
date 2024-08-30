@@ -48,10 +48,10 @@ def color_detection():
 
         # define the list of boundaries red,green,blue,yellow
         boundaries = [
-            ([0, 110, 162], [23, 199, 209]),
-            ([39, 99, 100], [53, 225, 183]),
-            ([81, 170, 121], [111, 212, 171]),
-            ([17, 83, 166], [78, 212, 255])
+            ([0, 140, 157], [12, 183, 181]),
+            ([33, 65, 116], [73, 201, 230]),
+            ([61, 164, 116], [115, 222, 180]),
+            ([21, 62, 62], [38, 198, 231])
         ]
         str_color = ["Red", "Green", "Blue", "Yellow"]
         image = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
@@ -249,7 +249,7 @@ positionData = []#position data list
 counter = []#counter of Number of movement list
 selectmode = input('Insert Command please! [HELP(-h)]:')#recieve string
 if(selectmode == "-np"):
-    f = open("/home/sakucom/Documents/Intro_to_Eng_Work/"+filename, "w")
+    f = open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB"+filename, "w")
     (i,j,k,m,j1,j2,j3,j4) = device.pose()#get pose
     positionxyz = [i,j,k]
     positionData.append(positionxyz)
@@ -269,7 +269,7 @@ if(selectmode == "-np"):
     camera_leveling_setup() #camera leveling setup
     print("New profile is ready to use!")
 elif(selectmode == "y"):
-    o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/"+filename).readlines())
+    o = str(open("//home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB"+filename).readlines())
     positionData = ast.literal_eval(o[2:-2])
     print(positionData)
     q = positionData[0][0]
@@ -280,11 +280,11 @@ elif(selectmode == "y"):
     moveto = stacking_system() #initialize stacking_system()
     print(moveto)
     device.move_to(q,w,e,0)
-    for j in range(1,len(positionData)):
+    for j in range(1,len(moveto)*2):
         if(j%2 != 0):
             x = positionData[j][0]
             y = positionData[j][1]
-            z = -47 #z coordinate defined by user 
+            z = -49 #z coordinate defined by user 
             device.move_to_J(x,y,z,r=0)
             print("Position:",str(j),":","x="+str(x),"y="+str(y),"z="+str(z)) 
             device.suck(True)
