@@ -22,13 +22,13 @@ device.move_to_L(5.1,130.2,1.2)
 device.close()'''
 
 #Auto_Custom_Position
-#filename = "DoBot_position_info" #change file for replay movement or create new trajectory plan
+filename = "DoBot_position_info" #change file for replay movement or create new trajectory plan
 device = pydobot.Dobot(port= "/dev/ttyUSB0")#if Acess denied occur. Install minicom and run sudo minicom -b 115200 -o -D /dev/ttyUSB0 in terminal
 positionData = []#position data list
 counter = []#counter of Number of movement list
 selectmode = input('New set(-ns),Pre set(press any key and enter):')#recieve string
 if(selectmode == "-ns"):
-    f = open("/home/sakucom/Desktop/DoBot-Movement-File/"+filename, "w")
+    f = open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB/"+filename, "w")
     (i,j,k,m,j1,j2,j3,j4) = device.pose()#get pose
     positionxyz = [i,j,k]
     positionData.append(positionxyz)
@@ -47,7 +47,7 @@ if(selectmode == "-ns"):
     f.close()
 p = input('Are you ready?(y|n):')
 if(p == "y"):
-    o = str(open("/home/sakucom/Desktop/DoBot-Movement-File/"+filename).readlines())
+    o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB/"+filename).readlines())
     positionData = ast.literal_eval(o[2:-2])
     print(positionData)
     q = positionData[0][0]

@@ -7,6 +7,7 @@ from operator import itemgetter
 colorData_initial = []
 colorData_final = []
 position_log = []
+position_skip_log = []
 
 def camera_leveling_setup():
     cap = cv2.VideoCapture(0)
@@ -138,7 +139,7 @@ def stacking_system():
             pixelposition = ['BLUE',center_x]
             object_position_i = dict(zip(colorlist, pixelposition))
             object_sort_i.append(object_position_i)    
-        elif(color_string == "yellow"):
+        elif(color_string == "Yellow"):
             yellow_counter+=1
             zy = zo + (yellow_counter * z)
             yellow_z.append(zy)
@@ -146,7 +147,7 @@ def stacking_system():
             pixelposition = ['YELLOW',center_x]
             object_position_i = dict(zip(colorlist, pixelposition))
             object_sort_i.append(object_position_i)
-    print(object_sort_i)
+    print("object_sort_i:",object_sort_i)
     object_sort_i = sorted(object_sort_i, key=itemgetter('Positionx'), reverse=True)
 
     for j in range(len(colorData_final)):
@@ -167,19 +168,20 @@ def stacking_system():
             pixelposition = ['BLUE',center_x]
             object_position_f = dict(zip(colorlist, pixelposition))
             object_sort_f.append(object_position_f)    
-        elif(color_string == "yellow"):
+        elif(color_string == "Yellow"):
             colorlist = ['Color','Positionx']
             pixelposition = ['YELLOW',center_x]
             object_position_f = dict(zip(colorlist, pixelposition))
             object_sort_f.append(object_position_f)
-    print(object_sort_f)
+    print("object_sort_f:",object_sort_f)
     object_sort_f = sorted(object_sort_f, key=itemgetter('Positionx'), reverse=False)
     print("Initial_Value:",object_sort_i)
     print("Final_Value:",object_sort_f)
     for m in range(len(object_sort_i)):
+        original_list_size = len(position_log)
         for n in range(len(object_sort_f)):
             if(object_sort_i[m]['Color'] == object_sort_f[n]['Color'] ):
-                o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/"+filename).readlines())
+                o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB/"+filename).readlines())
                 positionData = ast.literal_eval(o[2:-2])
                 #planing start
                 if(n ==  0):
@@ -239,8 +241,14 @@ def stacking_system():
                         e = yellow_z[0]
                         position_log.append([q,w,e])
                         del yellow_z[0]
+        if(len(position_log) == original_list_size):
+            q = 999
+            position_skip_log.append([q])
+        else:
+            q = 1000
+            position_skip_log.append([q])
 
-    return position_log
+    return position_log,position_skip_log
 
 #Auto_Custom_Position
 filename = "DoBot_position_info" #change file for replay movement or create new trajectory plan
@@ -269,7 +277,7 @@ if(selectmode == "-np"):
     camera_leveling_setup() #camera leveling setup
     print("New profile is ready to use!")
 elif(selectmode == "y"):
-    o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB"+filename).readlines())
+    o = str(open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB/"+filename).readlines())
     positionData = ast.literal_eval(o[2:-2])
     print(positionData)
     q = positionData[0][0]
@@ -278,20 +286,25 @@ elif(selectmode == "y"):
     print("Home position is:",q,w,e,0) 
     color_detection() #initialize color_detection()
     moveto = stacking_system() #initialize stacking_system()
-    print(moveto)
+    print(moveto[0])
+    print(moveto[1])
     device.move_to(q,w,e,0)
-    for j in range(1,len(moveto)*2):
-        if(j%2 != 0):
+    for j in range(1,6):
+        if(j%2 != 0 and moveto[1][0][0] != 999):
             x = positionData[j][0]
             y = positionData[j][1]
             z = -49 #z coordinate defined by user 
             device.move_to_J(x,y,z,r=0)
             print("Position:",str(j),":","x="+str(x),"y="+str(y),"z="+str(z)) 
             device.suck(True)
-            device.move_to_J(moveto[0][0], moveto[0][1], moveto[0][2], 0)
-            print("Position_final:",str(j),":","x="+str(moveto[0][0]),"y="+str(moveto[0][1]),"z="+str(moveto[0][2]))
+            device.move_to_J(moveto[0][0][0], moveto[0][0][1], moveto[0][0][2], 0)
+            print("Position_final:",str(j),":","x="+str(moveto[0][0][0]),"y="+str(moveto[0][0][1]),"z="+str(moveto[0][0][2]))
             device.suck(False)
-            del moveto[0]
+            print(moveto[1])
+            del moveto[0][0]
+            del moveto[1][0]
+        elif(j%2 != 0 and moveto[1][0][0] == 999):
+            del moveto[1][0]
     device.move_to_J(q,w,e,0)
 elif(selectmode == "-hm"):
     device.home()
