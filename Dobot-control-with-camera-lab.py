@@ -266,7 +266,7 @@ def stacking_system():
         else:
             q = 1000
             position_skip_log.append([q])
-    if(len(object_sort_i) < len(object_sort_f)):
+    if(len(object_sort_i) < len(object_sort_f) or len(object_sort_i) + len(object_sort_f) == 6):
         q = 999
         position_skip_log.append([q])
 
