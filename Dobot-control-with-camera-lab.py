@@ -98,8 +98,8 @@ def color_detection():
     cv2.destroyAllWindows()
 
 def stacking_system():
-    zo = -47 #get z origin value from user
-    z = 30.862 #get z value from user(height of z)
+    zo = -48 #get z origin value from user
+    z = 28.862 #get z value from user(height of z)
     red_counter = 0
     green_counter = 0
     blue_counter = 0
@@ -241,12 +241,34 @@ def stacking_system():
                         e = yellow_z[0]
                         position_log.append([q,w,e])
                         del yellow_z[0]
+                elif(n == 3):
+                    q = positionData[8][0]
+                    w = positionData[8][1]
+                    if(object_sort_f[n]['Color'] == "RED"):
+                        e = red_z[0]
+                        position_log.append([q,w,e])
+                        del red_z[0]
+                    elif(object_sort_f[n]['Color'] == "GREEN"):
+                        e = green_z[0]
+                        position_log.append([q,w,e])
+                        del green_z[0]
+                    elif(object_sort_f[n]['Color'] == "BLUE"):
+                        e = blue_z[0]
+                        position_log.append([q,w,e])
+                        del blue_z[0]
+                    elif(object_sort_f[n]['Color'] == "YELLOW"):
+                        e = yellow_z[0]
+                        position_log.append([q,w,e])
+                        del yellow_z[0]
         if(len(position_log) == original_list_size):
             q = 999
             position_skip_log.append([q])
         else:
             q = 1000
             position_skip_log.append([q])
+    if(len(object_sort_i) < len(object_sort_f)):
+        q = 999
+        position_skip_log.append([q])
 
     return position_log,position_skip_log
 
@@ -257,11 +279,11 @@ positionData = []#position data list
 counter = []#counter of Number of movement list
 selectmode = input('Insert Command please! [HELP(-h)]:')#recieve string
 if(selectmode == "-np"):
-    f = open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB"+filename, "w")
+    f = open("/home/sakucom/Documents/Intro_to_Eng_Work/Introduction_to_Dobot_KMUTNB/"+filename, "w")
     (i,j,k,m,j1,j2,j3,j4) = device.pose()#get pose
     positionxyz = [i,j,k]
     positionData.append(positionxyz)
-    en = 6
+    en = 8
     counter.append(en)
     for i in range(en):
         k = input('please place your end factor to destination position then type y for continue:')
@@ -289,7 +311,7 @@ elif(selectmode == "y"):
     print(moveto[0])
     print(moveto[1])
     device.move_to(q,w,e,0)
-    for j in range(1,6):
+    for j in range(1,len(positionData)):
         if(j%2 != 0 and moveto[1][0][0] != 999):
             x = positionData[j][0]
             y = positionData[j][1]
